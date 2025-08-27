@@ -1,0 +1,60 @@
+# Render.com deployment configuration for Book Notes application
+
+services:
+  # Web Service
+  - type: web
+    name: book-notes
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: book-notes-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CALLBACK_URL
+        value: https://book-notes.onrender.com/auth/google/add
+
+  # PostgreSQL Database
+  - type: postgres
+    name: book-notes-db
+    plan: free
+    ipAllowList: [] # Allow all IP addresses
+    databaseName: booknotes
+    initSQL: |
+      -- Database initialization script for Book Notes application
+      -- This script creates the necessary tables for the application
+
+      -- Create users table
+      CREATE TABLE IF NOT EXISTS users (
+          id SERIAL PRIMARY KEY,
+          firstname VARCHAR(45),
+          lastname VARCHAR(45),
+          email VARCHAR(45) UNIQUE NOT NULL,
+          password VARCHAR(100),
+          photo TEXT
+      );
+
+      -- Create items table with foreign key reference to users
+      CREATE TABLE IF NOT EXISTS items (
+          id SERIAL PRIMARY KEY,
+          author VARCHAR(100),
+          genre VARCHAR(50),
+          title VARCHAR(100),
+          review TEXT,
+          rating INT,
+          image_path VARCHAR(255),
+          user_id INT REFERENCES users(id) ON DELETE CASCADE,
+          is_private BOOLEAN DEFAULT FALSE
+      );
+
+      -- Create index for better performance on common queries
+      CREATE INDEX IF NOT EXISTS idx_items_user_id ON items(user_id);
+      CREATE INDEX IF NOT EXISTS idx_items_is_private ON items(is_private);
+      CREATE INDEX IF NOT EXISTS idx_items_genre ON items(genre);
+      CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
