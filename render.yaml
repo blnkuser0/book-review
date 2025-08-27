@@ -21,7 +21,7 @@ services:
         value: https://book-notes.onrender.com/auth/google/add
 
   # PostgreSQL Database
-  - type: db
+  - type: postgresql
     name: book-notes-db
     plan: free
     ipAllowList: [] # Allow all IP addresses
