@@ -16,8 +16,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 const saltRounds = 10;
-const callBackURL =
-  process.env.CALLBACK_URL || "http://localhost:3000/auth/google/add";
+const callBackURL = process.env.CALLBACK_URL || "http://localhost:3000/auth/google/add";
 
 const db = new pg.Client({
   connectionString: process.env.DATABASE_URL,
