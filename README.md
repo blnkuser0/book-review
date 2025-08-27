@@ -13,7 +13,7 @@ CREATE TABLE items (
     review TEXT,
     rating INT,
     image_path VARCHAR(255),
-    user_id INT REFERENCES,
+    user_id INT REFERENCES users(id),
     is_private BOOLEAN DEFAULT FALSE
 );
 
