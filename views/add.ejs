@@ -1,0 +1,52 @@
+<%- include('partials/header') %>
+
+<div class="container mt-5 d-flex flex-column align-items-center">
+  <div class="card p-4" style="max-width: 700px; width: 100%; border-radius: 20px;">
+    <form action="/add-review" method="POST" enctype="multipart/form-data">
+      <% if (typeof source !== 'undefined' && source) { %>
+        <input type="hidden" name="source" value="<%= source %>">
+      <% } %>
+      <div class="row mb-3">
+        <div class="col-md-8">
+          <label for="title" class="form-label">Title:</label>
+          <input type="text" class="form-control pangkulay-lang" id="title" name="title" placeholder="Book Title" required>
+        </div>
+        <div class="col-md-4">
+          <label for="rating" class="form-label">Rating:</label>
+          <input type="number" class="form-control pangkulay-lang" id="rating" name="rating" min="1" max="5" placeholder="1-5" required>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="review" class="form-label">Write Review Here:</label>
+        <textarea class="form-control pangkulay-lang" id="review" name="review" rows="5" placeholder="Write something here . . ."></textarea>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="genre" class="form-label">Genre:</label>
+          <select class="form-select" id="genre" name="genre" required>
+            <option value="" selected disabled>Select Genre</option>
+            <option value="fiction">Fiction</option>
+            <option value="nonfiction">Nonfiction</option>
+            <option value="fantasy">Fantasy</option>
+            <option value="mystery">Mystery</option>
+            <option value="biography">Biography</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="author" class="form-label">Author:</label>
+          <input type="text" class="form-control" id="author" name="author" required>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="bookImage" class="form-label">Book Cover Image:</label>
+        <input type="file" id="bookImage" name="bookImage" accept="image/*" class="visually-hidden" />
+        <label for="bookImage" class="btn btn-sm custom-upload-btn">📁 Choose File</label>
+        <span id="fileName" class="ms-2 text-muted">No file chosen</span>
+        <div class="form-text">Upload a book cover image (optional)</div>
+      </div>
+      <button type="submit" class="btn submit-button w-100 mt-2">Submit</button>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

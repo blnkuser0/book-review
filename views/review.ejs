@@ -1,0 +1,43 @@
+ <%- include('./partials/header.ejs') %>
+
+<section class="book-container">
+  <!-- Top Section: Image + Details -->
+  <div class="book-box">
+    <img src="<%= book.image_path %>" class="book-cover" alt="Book Cover">
+
+      <div class="book-detail">
+        <div class="bd-div tags">
+              <span class="tag-genre">
+                  <a style="color: white; text-decoration: none;" id="genre-tag">
+                      <%= book.genre.charAt(0).toUpperCase() + book.genre.slice(1) %>
+                  </a>
+              </span>
+          </div>
+      <h1 data-title="<%= book.title %>"><%= book.title %></h1>
+      <h4><i><strong><%= book.author %></strong></i></h4>
+
+      <div class="rating mb-2 star-row" data-rating="<%= book.rating %>">
+        <%- Array.from({ length: 5 }).map(() => '<span class="star">★</span>').join('') %>
+      </div>
+
+      <% if(user && book.user_id === user.id) { %> 
+      <div class="button-group">
+        <a href="/edit-review/<%= book.id %>" class="btn btn-edit">Edit</a>
+        <form action="/delete-review" method="POST">
+          <input type="hidden" name="id" value="<%= book.id %>">
+          <input type="hidden" name="referrer" value="<%= currentUrl %>"> <!-- Add referrer -->
+          <button class="btn btn-delete">Delete</button>
+        </form>
+      </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Bottom Section: Reviews -->
+  <div class="review-box">
+    <h2 class="review-text">Reviews:</h2>
+    <p id="review<%= book.id %>"><%- review %></p>
+  </div>
+</section>
+
+<%- include('./partials/footer.ejs') %>

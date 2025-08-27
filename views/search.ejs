@@ -1,0 +1,47 @@
+<%- include('./partials/header.ejs') %>
+
+    <hero>
+        <div class="container" style="text-align: center;">
+            <h1>
+                <% if (totalResult === 0) { %>
+                    <span class="oops">Oops! We couldn't find what you are looking for, try again, maybe?</span>
+                <% }else if(totalResult === 1) { %>
+                    We found just <span class="result"><%= totalResult %></span> result for '<%= searchTerm %>'
+                <% }else { %>
+                    We found <span class="result"><%= totalResult %></span> results for '<%= searchTerm %>'
+                <% } %>
+            </h1>
+        </div>
+    </hero>
+
+    <div class="container mt-5 mb-5 card-form">
+        <div class="row row-cols-1 row-cols-md-6 g-4 justify-content-center">
+            <% books.forEach(item => { %>
+            <div class="col">
+            <div class="card h-100">
+                <img
+                src="<%= item.image_path %>"
+                class="card-img-top"
+                alt="Book Cover"
+                />
+                <div class="card-body">
+                <!-- <span class="badge bg-success mb-2"><%= item.genre %></span> -->
+                <span class="badge bg-success mb-2"><%= item.genre.charAt(0).toUpperCase() + item.genre.slice(1) %></span>
+                <h5 class="card-title"><%= item.title %></h5>
+                <p class="card-text">By: <%= item.author %></p>
+                <div class="rating mb-2" data-rating="<%= item.rating %>">
+                    <%- Array.from({ length: 5 }).map(() => '<span class="star">★</span>').join('') %>
+                </div>
+                <a
+                    href="/reviews/<%= item.id %>"
+                    class="btn btn-outline-primary w-100"
+                    >Read Reviews</a
+                >
+                </div>
+            </div>
+            </div>
+            <% }) %>
+        </div>
+</div>
+
+    <%- include('./partials/footer.ejs') %>

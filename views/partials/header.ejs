@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+    <link rel="icon" type="image/x-icon" href="/assets/image/favicon.png" />
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <link rel="stylesheet" href="/styles/theme.css">
+    <title>ChapterMine</title>
+  </head>
+  <body>
+    <main>
+    <header class="p-3 mb-3 border-bottom">
+      <div class="container-fluid px-2 px-sm-3 px-md-4 px-lg-5">
+        <div class="row align-items-center gx-2 gy-2">
+          <!-- Logo and Brand -->
+          <div class="col-12 col-sm-auto col-lg-auto">
+            <a
+              href="/"
+              class="navbar-brand d-flex align-items-center text-decoration-none"
+            >
+              <img
+                src="/assets/image/book.png"
+                alt="Logo"
+                width="32"
+                height="32"
+                class="me-2"
+              />
+              <span class="min-title fw-bold d-none d-sm-inline"
+                >ChapterMine</span
+              >
+            </a>
+          </div>
+
+          <!-- Navigation - Mobile Toggle -->
+          <div class="col-12 col-sm-auto col-lg-auto">
+            <nav class="navbar navbar-expand-lg navbar-light p-0">
+              <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav flex-column flex-lg-row">
+                  <li class="nav-item">
+                    <a
+                      href="/"
+                      class="nav-link px-2 px-lg-3 py-1 link-body-emphasis"
+                      >Insights</a
+                    >
+                  </li>
+                  <% if (locals.user) { %>
+                  <li class="nav-item">
+                    <a
+                      href="/users/<%= user.id %>"
+                      class="nav-link px-2 px-lg-3 py-1 link-body-emphasis fw-bold"
+                      >Your Insights</a
+                    >
+                  </li>
+                  <% } %>
+                  <li class="nav-item">
+                    <a
+                      href="/about"
+                      class="nav-link px-2 px-lg-3 py-1 link-body-emphasis"
+                      >About</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+
+          <div
+            class="col-12 col-lg-auto ms-lg-auto d-flex align-items-center justify-content-lg-end gap-2"
+          >
+              <div class="filter-row" style="position: relative;">
+
+              <!-- SEARCH -->
+              <form action="/search" method="POST" id="searchForm" class="d-flex">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray"
+                    class="bi bi-search"
+                    viewBox="0 0 16 16"
+                    style="position: absolute; top: 50%; left: 8px; transform: translateY(-50%); pointer-events: none;">
+                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+                <input
+                  type="search"
+                  value="<%= locals.searchTerm %>"
+                  class="search-control form-control-sm"
+                  placeholder="Search..."
+                  aria-label="Search"
+                  id="searchInput"
+                  name="search"
+                />
+                <button type="submit" style="display: none;"></button>
+              </form>
+
+              <!-- SORT -->
+               <form action="/sort" method="post" id="sort-form">
+               <select onchange="submitForm()" name="sort" id="sort-select" class="form-select-sm">
+                    <option value="" disabled selected>Sort by</option>
+                    <option value="Name (A-Z)">Name (A-Z)</option>
+                    <option value="Rating ★">Rating</option>
+                </select> 
+            </form>
+
+            <!-- GENRE -->
+              <form action="/genre" method="POST" id="genreForm">
+                <select onchange="submitForm()"
+                class="genre-select form-select-sm"
+                id="genreFilter"
+                name="genre"
+              >
+                <option value="" selected disabled>Genre</option>
+                <option value="fiction">Fiction</option>
+                <option value="nonfiction">Non-Fic</option>
+                <option value="fantasy">Fantasy</option>
+                <option value="mystery">Mystery</option>
+                <option value="biography">Bio</option>
+              </select>
+              </form>
+              
+            </div>
+
+            <!-- Theme Switch - Compact -->
+            <div class="theme-switch">
+              <input
+                type="checkbox"
+                id="themeToggle"
+                class="theme-switch-checkbox"
+              />
+              <label class="theme-switch-label" for="themeToggle">
+                <span class="theme-switch-inner">
+                  <span class="theme-switch-light">
+                    <i class="bi bi-brightness-high"></i>
+                  </span>
+                  <span class="theme-switch-dark">
+                    <i class="bi bi-moon-stars"></i>
+                  </span>
+                </span>
+                <span class="theme-switch-switch"></span>
+              </label>
+            </div>
+
+            <!-- Login/Logout Button -->
+            <% if (locals.user) { %>
+                <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
+                <% if (user.photo) { %>
+                    <img class="profile-photo" src="<%= user.photo %>" alt="profile picture" style="width: 32px; height: 32px; border-radius: 50%; margin-left: 8px;">
+                <% } %>
+            <% } else { %>
+                <a href="/login" class="btn btn-outline-primary btn-sm" id="login">Login/SignUp</a>
+            <% } %>
+            
+          </div>
+        </div>
+      </div>
+    </header>
+ 

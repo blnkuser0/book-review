@@ -1,0 +1,57 @@
+<%- include('partials/header') %>
+
+<hero>
+  <div class="banner">
+    <h1>Welcome to ChapterMine Books!</h1>
+    <h2>
+      Discover favorite books through shared reviews and personal reflections.
+    </h2>
+  </div>
+</hero>
+
+<div class="container mt-5 mb-5 card-form">
+  <div class="row row-cols-1 row-cols-md-6 g-4 justify-content-center">
+    <% book.forEach(item => { %>
+    <div class="col">
+      <div class="card h-100">
+        <img
+          src="<%= item.image_path %>"
+          class="card-img-top"
+          alt="Book Cover"
+        />
+        <div class="card-body">
+          <!-- <span class="badge bg-success mb-2"><%= item.genre %></span> -->
+          <span class="badge bg-success mb-2"><%= item.genre.charAt(0).toUpperCase() + item.genre.slice(1) %></span>
+          <h5 class="card-title"><%= item.title %></h5>
+          <p class="card-text">By: <%= item.author %></p>
+          <div class="rating mb-2" data-rating="<%= item.rating %>">
+            <%- Array.from({ length: 5 }).map(() => '<span class="star">★</span>').join('') %>
+          </div>
+          <a
+            href="/reviews/<%= item.id %>"
+            class="btn btn-outline-primary w-100"
+            >Read Reviews</a
+          >
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</div>
+
+<!-- Create Button - Bottom Right -->
+<button class="create-btn" onclick="window.location.href='/add-review'">
+  <span>
+    <svg
+      height="31"
+      width="31"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" fill="currentColor"></path>
+    </svg>
+  </span>
+</button>
+
+<%- include('partials/footer') %>
