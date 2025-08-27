@@ -3,14 +3,13 @@ import bodyParser from "body-parser";
 import pg from "pg";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
-import session from "express-session";
+import session, { Session } from "express-session";
 import passport from "passport";
 import { Strategy } from "passport-local";
 import flash from "connect-flash";
 import GoogleStrategy from "passport-google-oauth2";
 import multer from "multer";
 import path from "path";
-import pgSession from "connect-pg-simple";
 
 dotenv.config();
 
@@ -22,27 +21,16 @@ const callBackURL =
 
 const db = new pg.Client({
   connectionString: process.env.DATABASE_URL,
-   ssl: { rejectUnauthorized: false }
+   ssl: { rejectUnauthorized: false } 
 });
 
 db.connect();
 
-// Configure session store for production
-const sessionStore = new (pgSession(session))({
-  conString: process.env.DATABASE_URL,
-  createTableIfMissing: true,
-});
-
 app.use(
   session({
-    store: sessionStore,
     secret: process.env.SECRET_KEY,
     resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      secure: process.env.NODE_ENV === 'production',
-    },
+    saveUninitialized: true,
   })
 );
 
