@@ -20,7 +20,7 @@ const callBackURL = process.env.CALLBACK_URL || "http://localhost:3000/auth/goog
 
 const db = new pg.Client({
   connectionString: process.env.DATABASE_URL,
-   // ssl: { rejectUnauthorized: false } 
+    ssl: { rejectUnauthorized: false } 
 });
 
 db.connect();
