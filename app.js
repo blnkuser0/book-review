@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import pg from "pg";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
-import session, { Session } from "express-session";
+import session from "express-session";
 import passport from "passport";
 import { Strategy } from "passport-local";
 import flash from "connect-flash";
@@ -16,11 +16,12 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 const saltRounds = 10;
-const callBackURL = process.env.CALLBACK_URL || "http://localhost:3000/auth/google/add";
+const callBackURL =
+  process.env.CALLBACK_URL || "http://localhost:3000/auth/google/add";
 
 const db = new pg.Client({
   connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false } 
+  //  ssl: { rejectUnauthorized: false }
 });
 
 db.connect();
@@ -30,6 +31,9 @@ app.use(
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      maxAge: 1000 * 60 * 60 //this cookie good for 1 hour only
+    }
   })
 );
 
@@ -167,16 +171,62 @@ app.get("/signup", async (req, res) => {
   res.render("signup", { user: req.user });
 });
 
-app.get("/add-review", async (req, res) => {
-  if (req.isAuthenticated()) {
-    res.render("add", {
-      total: await totalBooks(),
-      user: req.user,
-      source: req.query.source, // Pass the source parameter to the view
-    });
-  } else {
-    res.redirect("/login");
+app.post("/signup", async (req, res) => {
+  const firstName = req.body.firstname;
+  const lastName = req.body.lastname;
+  const email = req.body.username;
+  const password = req.body.password;
+
+  try {
+    const userCheck = await db.query(
+      `SELECT * FROM users WHERE firstname = $1 AND lastname = $2 AND email = $3`,
+      [firstName, lastName, email]
+    );
+
+    if (userCheck.rows.length > 0) {
+      req.flash("error", "User already exists. Please log in.");
+      return res.redirect("/login");
+    } else {
+      bcrypt.hash(password, saltRounds, async (err, hash) => { 
+        const newUser = await db.query(
+          `INSERT INTO users (firstname, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING id`,
+          [firstName, lastName, email, hash]
+        );
+        res.redirect("/login");
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error signing up");
   }
+});
+
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+  }),
+  (req, res) => {
+    res.redirect(`/users/${req.user.id}`);
+  }
+);
+
+app.get("/add-review", async (req, res) => {
+  // if (req.isAuthenticated()) {
+  //   res.render("add", {
+  //     total: await totalBooks(),
+  //     user: req.user,
+  //     source: req.query.source, // Pass the source parameter to the view
+  //   });
+  // } else {
+  //   res.redirect("/login");
+  // }
+
+  res.render("add", {
+    total: await totalBooks(),
+    user: req.user,
+    source: req.query.source, // Pass the source parameter to the view
+  });
 });
 
 app.post("/add-review", upload.single("bookImage"), async (req, res) => {
@@ -425,21 +475,20 @@ passport.use(
   "local",
   new Strategy(async function verify(username, password, cb) {
     try {
-      const result = await db.query("SELECT * FROM users where email = $1", [
-        username,
-      ]);
+      const result = await db.query(
+        `SELECT * FROM users WHERE email = $1 `,
+        [username]
+      );
 
       if (result.rows.length > 0) {
         const user = result.rows[0];
-        const hashedPassword = user.password;
+        const isValidPassword = user.password;
 
-        // Password Check
-        bcrypt.compare(password, hashedPassword, (err, result) => {
+        bcrypt.compare(password, isValidPassword, (err, isMatch) => {
           if (err) {
-            console.log(err);
             return cb(err);
           } else {
-            if (result) {
+            if (isMatch) {
               return cb(null, user);
             } else {
               return cb(null, false, {
@@ -449,10 +498,12 @@ passport.use(
           }
         });
       } else {
-        return cb(null, false, { message: "User not found" });
+        return cb(null, false, {
+          message: "User not found",
+        });
       }
     } catch (err) {
-      console.log(err);
+      return cb(err);
     }
   })
 );
@@ -468,4 +519,3 @@ passport.deserializeUser((user, cb) => {
 app.listen(port, () => {
   console.log(`Server is running on port http://localhost:${port}`);
 });
-

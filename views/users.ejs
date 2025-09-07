@@ -20,8 +20,7 @@
           alt="Book Cover"
         />
         <div class="card-body">
-          <!-- <span class="badge bg-success mb-2"><%= item.genre %></span> -->
-          <span class="badge bg-success mb-2"><%= item.genre.charAt(0).toUpperCase() + item.genre.slice(1) %></span>
+          <span class="badge bg-success mb-2"><%= item.genre ? item.genre.charAt(0).toUpperCase() + item.genre.slice(1) : 'Unknown' %></span>
           <h5 class="card-title"><%= item.title %></h5>
           <p class="card-text">By: <%= item.author %></p>
           <div class="rating mb-2" data-rating="<%= item.rating %>">

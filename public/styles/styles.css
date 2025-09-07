@@ -166,7 +166,7 @@ main {
   padding: 2rem 0;
 }
 .login-form-inner {
-  background: #fff;
+  background: var(--card-bg-color, #fff);
   border-radius: 12px;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
   padding: 1.5rem;
@@ -226,14 +226,16 @@ main {
   font-weight: 500;
   color: #1d1515;
 }
-.form-control {
-  border-radius: 50px;
-  border: solid 1px #000000;
+.login-control {
+  display: flex;
+  width: 100%;
+  padding-left: 10px;
+  border-radius: 10px;
 }
-.form-control:focus {
+/* .login-control:focus {
   box-shadow: 0 0 0 2px #8ec5fc;
   border-color: #8ec5fc;
-}
+} */
 .btn-login {
   background: #bbb;
   border-radius: 50px;
@@ -348,6 +350,186 @@ main {
 .create-btn:active {
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Media Queries */
+
+/* Extra small devices (phones, <576px) */
+@media (max-width: 575.98px) {
+  /* Banner */
+  .banner {
+    height: 150px;
+    padding: 5px 0 10px 0;
+  }
+  .banner h1 {
+    font-size: 2em;
+  }
+  .banner h2 {
+    font-size: 1em;
+  }
+
+  /* Cards */
+  .card {
+    margin-bottom: 1rem;
+  }
+  .card-img-top {
+    height: 250px;
+  }
+  .card-title {
+    font-size: 1rem;
+  }
+  .card-text {
+    font-size: 0.85rem;
+  }
+  .rating {
+    font-size: 1rem;
+  }
+  .badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+  .btn-outline-primary {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+
+  /* Create Button */
+  .create-btn {
+    bottom: 70px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 14px;
+  }
+  .create-btn:hover {
+    width: 120px;
+  }
+  .create-btn:hover span::after {
+    max-width: 80px;
+  }
+
+  /* Search */
+  #searchInput::placeholder {
+    font-size: 0.8rem;
+  }
+
+  /* Typography scaling */
+  body {
+    font-size: 0.9rem;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Small devices (576px to 767px) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  /* Banner */
+  .banner h1 {
+    font-size: 2.5em;
+  }
+  .banner h2 {
+    font-size: 1.1em;
+  }
+
+  /* Cards */
+  .card-img-top {
+    height: 300px;
+  }
+  .card-title {
+    font-size: 1.05rem;
+  }
+  .card-text {
+    font-size: 0.9rem;
+  }
+
+  /* Create Button */
+  .create-btn {
+    bottom: 80px;
+    right: 30px;
+  }
+
+  /* Typography */
+  body {
+    font-size: 0.95rem;
+  }
+}
+
+/* Medium devices (768px to 991px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  /* Banner */
+  .banner h1 {
+    font-size: 2.8em;
+  }
+  .banner h2 {
+    font-size: 1.15em;
+  }
+
+  /* Cards */
+  .card-img-top {
+    height: 320px;
+  }
+
+  /* Create Button */
+  .create-btn {
+    bottom: 85px;
+    right: 40px;
+  }
+
+  /* Typography */
+  body {
+    font-size: 1rem;
+  }
+}
+
+/* Large devices (992px to 1199px) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  /* Banner */
+  .banner h1 {
+    font-size: 3.2em;
+  }
+
+  /* Cards */
+  .card-img-top {
+    height: 380px;
+  }
+
+  /* Create Button */
+  .create-btn {
+    bottom: 90px;
+    right: 50px;
+  }
+}
+
+/* Extra large devices (1200px to 1399px) */
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+  /* Banner */
+  .banner h1 {
+    font-size: 3.5em;
+  }
+
+  /* Cards */
+  .card-img-top {
+    height: 400px;
+  }
+}
+
+/* Extra extra large devices (>=1400px) */
+@media (min-width: 1400px) {
+  /* Banner */
+  .banner h1 {
+    font-size: 4em;
+  }
+
+  /* Cards */
+  .card-img-top {
+    height: 450px;
+  }
+
+  /* Container max width for very large screens */
+  .card-form {
+    max-width: 1800px;
+  }
 }
 
 /* Edit Review Page Styles */
