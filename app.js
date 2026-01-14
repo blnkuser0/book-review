@@ -21,7 +21,7 @@ const callBackURL =
 
 const db = new pg.Client({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  // ssl: { rejectUnauthorized: false }
 });
 
 db.connect();
@@ -32,8 +32,8 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      maxAge: 1000 * 60 * 60 //this cookie good for 1 hour only
-    }
+      maxAge: 1000 * 60 * 60, //this cookie good for 1 hour only
+    },
   })
 );
 
@@ -187,7 +187,7 @@ app.post("/signup", async (req, res) => {
       req.flash("error", "User already exists. Please log in.");
       return res.redirect("/login");
     } else {
-      bcrypt.hash(password, saltRounds, async (err, hash) => { 
+      bcrypt.hash(password, saltRounds, async (err, hash) => {
         const newUser = await db.query(
           `INSERT INTO users (firstname, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING id`,
           [firstName, lastName, email, hash]
@@ -212,24 +212,22 @@ app.post(
 );
 
 app.get("/add-review", async (req, res) => {
-  // if (req.isAuthenticated()) {
-  //   res.render("add", {
-  //     total: await totalBooks(),
-  //     user: req.user,
-  //     source: req.query.source, // Pass the source parameter to the view
-  //   });
-  // } else {
-  //   res.redirect("/login");
-  // }
-
-  res.render("add", {
-    total: await totalBooks(),
-    user: req.user,
-    source: req.query.source, // Pass the source parameter to the view
-  });
+  if (req.isAuthenticated()) {
+    res.render("add", {
+      total: await totalBooks(),
+      user: req.user,
+      source: req.query.source, // Pass the source parameter to the view
+    });
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.post("/add-review", upload.single("bookImage"), async (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect("/login");
+  }
+
   const title = req.body.title;
   const author = req.body.author;
   const review = req.body.review;
@@ -475,10 +473,9 @@ passport.use(
   "local",
   new Strategy(async function verify(username, password, cb) {
     try {
-      const result = await db.query(
-        `SELECT * FROM users WHERE email = $1 `,
-        [username]
-      );
+      const result = await db.query(`SELECT * FROM users WHERE email = $1 `, [
+        username,
+      ]);
 
       if (result.rows.length > 0) {
         const user = result.rows[0];
